@@ -131,13 +131,13 @@ class FormManager {
     showSignUp() {
         if (this.signinForm) this.signinForm.classList.add('hidden');
         if (this.signupForm) this.signupForm.classList.remove('hidden');
-        document.title = 'Sign Up - LLMChat.co';
+        document.title = 'Sign Up - LuvlyGreeneClonathon';
     }
     
     showSignIn() {
         if (this.signupForm) this.signupForm.classList.add('hidden');
         if (this.signinForm) this.signinForm.classList.remove('hidden');
-        document.title = 'Sign In - LLMChat.co';
+        document.title = 'Sign In - LuvlyGreeneClonathon';
     }
     
     togglePassword(inputId) {

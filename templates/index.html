@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLMChat.co</title>
+    <title>LuvlyGreeneClonathon</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -17,7 +17,7 @@
             <!-- Sidebar Header -->
             <div class="p-4 border-b">
                 <div class="flex items-center justify-between mb-4">
-                    <h1 class="text-xl font-bold transition-opacity duration-300" id="sidebarTitle">llmchat.co</h1>
+                    <h1 class="text-xl font-bold transition-opacity duration-300" id="sidebarTitle">LuvlyGreeneClonathon</h1>
                     <button id="collapseSidebar" class="p-2 hover:bg-opacity-80 rounded-full transition-all duration-200 flex items-center justify-center w-8 h-8 border">
                         <i class="fas fa-times text-sm" id="collapseIcon"></i>
                     </button>
@@ -132,9 +132,9 @@
                         <div class="flex items-center justify-between p-4 border-t">
                             <div class="flex items-center space-x-2">
                                 <button id="modelSelector" class="flex items-center space-x-2 hover:bg-opacity-80 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200">
-                                    <span id="selectedModel">Gemini Flash 2.0</span>
-                                    <i class="fas fa-magic text-sm opacity-70"></i>
-                                    <i class="fas fa-globe text-sm opacity-70"></i>
+                                    <span id="selectedModel">Together Llama-3.3-70B</span>
+                                    <!--<i class="fas fa-magic text-sm opacity-70"></i>
+                                    <i class="fas fa-globe text-sm opacity-70"></i>!-->
                                     <i class="fas fa-chevron-down text-sm opacity-70"></i>
                                 </button>
                             </div>
@@ -155,9 +155,9 @@
             <div class="mb-6">
                 <h3 class="font-semibold text-lg mb-4 flex items-center">
                     <i class="fas fa-rocket mr-2 text-purple-500"></i>
-                    Advanced Mode
+                    Coming Soon
                 </h3>
-                <div class="space-y-3">
+                <!--<div class="space-y-3">
                     <div class="flex items-start space-x-4 p-4 hover:bg-opacity-20 hover:bg-blue-500 rounded-xl cursor-pointer transition-all duration-200 border border-opacity-20 hover:border-opacity-40 border-blue-500" data-model="deep-research">
                         <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
                             <i class="fas fa-microscope text-white text-sm"></i>
@@ -198,7 +198,7 @@
                                     <span>Reasoning</span>
                                 </div>
                             </div>
-                        </div>
+                        </div>!-->
                     </div>
                 </div>
             </div>
@@ -401,7 +401,7 @@
                     <!-- User Profile Card -->
                     <div class="account-info-card mb-6 p-6 rounded-lg border">
                         <div class="flex items-center space-x-4 mb-4">
-                            <img src="{{ current_user.pfp_url }}" 
+                            <img src="{{ url_for('static', filename='cats/pfp.jpg') }}" 
                                  alt="Profile Picture" 
                                  class="account-avatar w-20 h-20 rounded-full border-2"
                                  id="profilePicture">
@@ -420,7 +420,7 @@
                             </div>
                         </div>
                         
-                        <div class="grid grid-cols-3 gap-4">
+                        <div class="grid grid-cols-2 gap-4">
                             <div class="account-stat text-center p-3 rounded-lg border">
                                 <div class="text-2xl font-bold mb-1" id="conversationCount">0</div>
                                 <div class="text-sm opacity-70">Conversations</div>
@@ -428,10 +428,6 @@
                             <div class="account-stat text-center p-3 rounded-lg border">
                                 <div class="text-2xl font-bold mb-1" id="daysActive">0</div>
                                 <div class="text-sm opacity-70">Days Active</div>
-                            </div>
-                            <div class="account-stat text-center p-3 rounded-lg border">
-                                <div class="text-2xl font-bold mb-1" id="messagesSent">0</div>
-                                <div class="text-sm opacity-70">Messages Sent</div>
                             </div>
                         </div>
                     </div>
@@ -624,41 +620,18 @@
                     <p class="opacity-70 mb-6">Keys are stored locally in your browser and never sent to our servers.</p>
                     
                     <div class="space-y-6">
-                        <!-- OpenAI -->
+                        <!-- Together -->
                         <div>
                             <div class="flex items-center justify-between mb-2">
-                                <h4 class="font-medium">OpenAI</h4>
-                                <a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
+                                <h4 class="font-medium">Together Ai</h4>
+                                <a href="https://api.together.ai/" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
                             </div>
                             <div class="flex space-x-2">
-                                <input type="password" id="openaiKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
-                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="openai">Save Key</button>
+                                <input type="password" id="togetherKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="together" disabled>Coming soon</button>
                             </div>
                         </div>
                         
-                        <!-- Anthropic -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="font-medium">Anthropic</h4>
-                                <a href="https://console.anthropic.com/" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
-                            </div>
-                            <div class="flex space-x-2">
-                                <input type="password" id="anthropicKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
-                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="anthropic">Save Key</button>
-                            </div>
-                        </div>
-                        
-                        <!-- Google Gemini -->
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <h4 class="font-medium">Google Gemini</h4>
-                                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
-                            </div>
-                            <div class="flex space-x-2">
-                                <input type="password" id="geminiKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
-                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="gemini">Save Key</button>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 

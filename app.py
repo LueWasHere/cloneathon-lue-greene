@@ -133,6 +133,8 @@ def send_to_ai():
         
         new_chat_info = request.get_json()
         new_chat_id = new_chat_info["chat_id"]
+        custom_key = new_chat_info.get("custom_key", None)
+        print(custom_key)
         
         db_manager.makeChat(current_user.id, new_chat_id)
         new_message_id = str(uuid.uuid4())
@@ -140,7 +142,7 @@ def send_to_ai():
         db_manager.addMessageToChat(new_chat_id, new_message_id, new_chat_info["content"], "user")
         
         client_ai = ai_client.openai.OpenAI(
-          api_key=ai_client.selected_provider["key"],
+          api_key=(ai_client.selected_provider["key"] if custom_key is None else custom_key),
           base_url=ai_client.selected_provider["url"],
         )
         

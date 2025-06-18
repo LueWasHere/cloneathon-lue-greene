@@ -109,7 +109,7 @@ async function handleSendMessage() {
             'Content-Type': 'application/json'
         },
         // The body is the actual data we send, converted to a JSON string.
-        body: JSON.stringify({ "content": content , "chat_id": threadId })
+        body: JSON.stringify({ "content": content , "chat_id": threadId, "custom_model": userPreferences.api_keys.together })
     };
 
     fetch('/api/send_to_ai', json=options)

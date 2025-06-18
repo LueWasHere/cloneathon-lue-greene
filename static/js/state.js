@@ -9,7 +9,7 @@ let userPreferences = {};
 let currentTheme = 'default';
 let isDarkMode = false;
 let isSidebarCollapsed = false;
-let selectedModel = 'Gemini Flash 2.0';
+let selectedModel = 'Together Llama-3.3-70B';
 
 // --- Data Persistence (localStorage) ---
 function saveAppData() {
@@ -71,15 +71,13 @@ function applyUserPreferences() {
     currentTheme = userPreferences.theme || 'default';
     isDarkMode = userPreferences.is_dark_mode || false;
     isSidebarCollapsed = userPreferences.sidebar_collapsed || false;
-    selectedModel = userPreferences.default_model || 'Gemini Flash 2.0';
+    selectedModel = 'Together Llama-3.3-70B'; // userPreferences.default_model || 'Together Llama-3.3-70B'; // TODO: REIMPLEMENT
     
     document.getElementById('selectedModel').textContent = selectedModel;
     document.getElementById('customInstructions').value = userPreferences.custom_instructions || '';
     
     if (userPreferences.api_keys) {
-        document.getElementById('openaiKey').value = userPreferences.api_keys.openai ? '••••••••••••' : '';
-        document.getElementById('anthropicKey').value = userPreferences.api_keys.anthropic ? '••••••••••••' : '';
-        document.getElementById('geminiKey').value = userPreferences.api_keys.gemini ? '••••••••••••' : '';
+        document.getElementById('togetherKey').value = userPreferences.api_keys.together ? '••••••••••••' : '';
     }
     
     if (isSidebarCollapsed) hideSidebar(false); // from ui.js
