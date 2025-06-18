@@ -1,0 +1,259 @@
+/* Custom and override styles */
+.nav-active { background-color: rgba(0, 0, 0, 0.1) !important; }
+.usage-info-box { background-color: #FEF3C7 !important; border-color: #F59E0B !important; }
+.thread-item:hover .thread-menu-btn { opacity: 1 !important; }
+.sidebar-text, .sidebar-collapsed { transition: opacity 0.3s ease; }
+#sidebar { transition: width 0.3s ease; }
+.suggestion-chip:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); }
+.thread-item.bg-opacity-30 { background-color: rgba(59, 130, 246, 0.1) !important; border-left: 3px solid #3B82F6; }
+#showSidebar { background-color: var(--surface); color: var(--primary-text); border-color: var(--border); }
+#welcomeScreen { min-height: calc(100vh - 200px); }
+
+/* Improved Send Button */
+#sendBtn {
+    background: linear-gradient(135deg, var(--primary-btn) 0%, rgba(59, 130, 246, 0.8) 100%);
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+}
+
+#sendBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+#sendBtn:active {
+    transform: translateY(0);
+}
+
+/* Enhanced Model Dropdown */
+#modelDropdown {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.theme-dark #modelDropdown {
+    background: rgba(37, 37, 37, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Account Tab Styles */
+.account-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid var(--border);
+    background-color: var(--surface);
+    transition: all 0.2s ease;
+}
+
+.account-avatar:hover {
+    border-color: var(--primary-btn);
+    transform: scale(1.05);
+}
+
+.account-info-card {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+}
+
+.account-info-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.account-stat {
+    background-color: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.account-stat:hover {
+    background-color: var(--main-bg);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--surface);
+    color: var(--primary-text);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn-secondary:hover {
+    background-color: var(--main-bg);
+    border-color: var(--primary-btn);
+    transform: translateY(-1px);
+}
+
+/* Account action buttons */
+#signOutBtn:hover {
+    background-color: var(--main-bg);
+    border-color: var(--primary-btn);
+}
+
+#deleteAccountBtn {
+    background-color: #DC2626;
+    color: white;
+    border: none;
+    transition: all 0.2s ease;
+}
+
+#deleteAccountBtn:hover {
+    background-color: #B91C1C;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-verified {
+    background-color: #F0FDF4;
+    color: #166534;
+    border: 1px solid #BBF7D0;
+}
+
+.status-free-plan {
+    background-color: #FEF3C7;
+    color: #D97706;
+    border: 1px solid #FCD34D;
+}
+
+/* Dark mode adjustments */
+body.theme-dark .status-verified {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #86EFAC;
+    border-color: rgba(34, 197, 94, 0.3);
+}
+
+body.theme-dark .status-free-plan {
+    background-color: rgba(245, 158, 11, 0.1);
+    color: #FDBA74;
+    border-color: rgba(245, 158, 11, 0.3);
+}
+
+/* Responsive design for account tab */
+@media (max-width: 768px) {
+    .account-info-card .grid {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .account-avatar {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .account-info-card .flex {
+        flex-direction: column;
+        text-align: center;
+        space-x: 0;
+        space-y: 1rem;
+    }
+}
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar {
+    scrollbar-width: thin;
+}
+
+/* Webkit browsers (Chrome, Safari, Edge) */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-text);
+}
+
+.custom-scrollbar::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* Firefox */
+.custom-scrollbar {
+    scrollbar-color: var(--border) transparent;
+}
+
+/* Theme-specific scrollbar colors */
+body.theme-light .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+body.theme-light .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+body.theme-dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body.theme-dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Blue theme scrollbar */
+body.theme-blue .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary-btn);
+    opacity: 0.3;
+}
+
+body.theme-blue .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    opacity: 0.6;
+}
+
+/* Purple theme scrollbar */
+body.theme-purple .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary-btn);
+    opacity: 0.4;
+}
+
+body.theme-purple .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    opacity: 0.7;
+}
+
+/* Green theme scrollbar */
+body.theme-green .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary-btn);
+    opacity: 0.4;
+}
+
+body.theme-green .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    opacity: 0.7;
+}
+
+/* Warm theme scrollbar */
+body.theme-warm .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary-btn);
+    opacity: 0.4;
+}
+
+body.theme-warm .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    opacity: 0.7;
+}

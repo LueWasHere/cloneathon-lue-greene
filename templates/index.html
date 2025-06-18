@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLMChat.co</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="font-sans min-h-screen transition-all duration-300" id="app">
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Left Sidebar -->
+        <div id="sidebar" class="border-r flex flex-col transition-all duration-300 relative" style="width: 320px;">
+            <!-- Sidebar Header -->
+            <div class="p-4 border-b">
+                <div class="flex items-center justify-between mb-4">
+                    <h1 class="text-xl font-bold transition-opacity duration-300" id="sidebarTitle">llmchat.co</h1>
+                    <button id="collapseSidebar" class="p-2 hover:bg-opacity-80 rounded-full transition-all duration-200 flex items-center justify-center w-8 h-8 border">
+                        <i class="fas fa-times text-sm" id="collapseIcon"></i>
+                    </button>
+                </div>
+                
+                <!-- New Thread Button -->
+                <button id="newThreadBtn" class="w-full border rounded-lg px-4 py-2 font-medium hover:bg-opacity-80 transition-all duration-200 mb-4">
+                    <span class="sidebar-text">
+                        <i class="fas fa-plus mr-2"></i>New Thread
+                    </span>
+                    <span class="sidebar-collapsed hidden">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                </button>
+                
+                <!-- Search Bar -->
+                <div class="relative sidebar-text">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <input type="text" id="searchInput" placeholder="Search" class="w-full pl-10 pr-16 py-2 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                        <span class="text-xs px-2 py-1 rounded border">⌘K</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar Content -->
+            <div class="flex-1 p-4 custom-scrollbar" id="sidebarContent" style="overflow-y: auto;">
+                <!-- Loading State -->
+                <div id="threadsLoading" class="text-center py-8">
+                    <i class="fas fa-spinner fa-spin text-2xl opacity-50"></i>
+                    <p class="mt-2 opacity-70">Loading threads...</p>
+                </div>
+                
+                <!-- Threads Container -->
+                <div id="threadsContainer" class="hidden"></div>
+            </div>
+            
+            <!-- Sidebar Footer -->
+            <div class="p-4 border-t space-y-2">
+                <button id="settingsBtn" class="w-full border rounded-lg px-4 py-2 font-medium hover:bg-opacity-80 transition-all duration-200 flex items-center justify-center cursor-pointer" type="button">
+                    <span class="sidebar-text">
+                        <i class="fas fa-cog mr-2"></i>Settings
+                    </span>
+                    <span class="sidebar-collapsed hidden">
+                        <i class="fas fa-cog"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Hamburger Menu Button (shown when sidebar is hidden) -->
+        <button id="showSidebar" class="hidden fixed top-4 left-4 z-50 p-2 hover:bg-opacity-80 rounded-full transition-all duration-200 flex items-center justify-center w-10 h-10 border">
+            <i class="fas fa-bars text-sm"></i>
+        </button>
+        
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col">
+            <!-- Chat Messages Area -->
+            <div id="chatContainer" class="flex-1 relative custom-scrollbar">
+                <!-- Welcome Message -->
+                <div id="welcomeScreen" class="absolute inset-0 flex items-center justify-center overflow-hidden">
+                    <div class="text-center w-full max-w-4xl mx-auto px-8">
+                        <h2 class="text-4xl font-medium mb-8" id="welcomeGreeting">Good evening</h2>
+                        
+                        <!-- Suggestion Chips -->
+                        <div class="flex flex-wrap gap-3 justify-center mb-8">
+                            <button class="suggestion-chip hover:bg-opacity-80 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2" data-prompt="How can I learn a new programming language effectively?">
+                                <i class="fas fa-question-circle"></i>
+                                <span>How to</span>
+                            </button>
+                            <button class="suggestion-chip hover:bg-opacity-80 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2" data-prompt="Explain the concept of artificial intelligence in simple terms">
+                                <i class="fas fa-lightbulb"></i>
+                                <span>Explain Concepts</span>
+                            </button>
+                            <button class="suggestion-chip hover:bg-opacity-80 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2" data-prompt="Write a creative short story about a robot learning to paint">
+                                <i class="fas fa-sparkles"></i>
+                                <span>Creative</span>
+                            </button>
+                            <button class="suggestion-chip hover:bg-opacity-80 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2" data-prompt="What advice would you give to someone starting their career?">
+                                <i class="fas fa-comments"></i>
+                                <span>Advice</span>
+                            </button>
+                            <button class="suggestion-chip hover:bg-opacity-80 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 flex items-center space-x-2" data-prompt="Analyze the pros and cons of remote work">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Analysis</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chat Messages -->
+                <div id="messagesContainer" class="hidden max-w-4xl mx-auto w-full px-4 py-8">
+                    <div id="messagesList"></div>
+                </div>
+            </div>
+            
+            <!-- Chat Input Area -->
+            <div class="border-t p-4">
+                <div class="max-w-4xl mx-auto">
+                    <!-- Chat Input Form -->
+                    <div class="rounded-xl border shadow-sm">
+                        <textarea 
+                            id="messageInput"
+                            placeholder="Ask anything" 
+                            class="w-full p-4 border-none resize-none focus:outline-none rounded-t-xl"
+                            rows="3"
+                        ></textarea>
+                        
+                        <!-- Input Controls -->
+                        <div class="flex items-center justify-between p-4 border-t">
+                            <div class="flex items-center space-x-2">
+                                <button id="modelSelector" class="flex items-center space-x-2 hover:bg-opacity-80 px-3 py-2 rounded-full text-sm font-medium transition-all duration-200">
+                                    <span id="selectedModel">Gemini Flash 2.0</span>
+                                    <i class="fas fa-magic text-sm opacity-70"></i>
+                                    <i class="fas fa-globe text-sm opacity-70"></i>
+                                    <i class="fas fa-chevron-down text-sm opacity-70"></i>
+                                </button>
+                            </div>
+                            <button id="sendBtn" class="hover:bg-opacity-90 px-6 py-3 rounded-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center min-w-[80px] font-medium">
+                                <i class="fas fa-arrow-up text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Model Selector Dropdown -->
+    <div id="modelDropdown" class="hidden fixed z-50 rounded-xl shadow-2xl border w-96 backdrop-blur-md max-h-[80vh] overflow-y-auto custom-scrollbar">
+        <div class="p-6">
+            <!-- Advanced Mode Section -->
+            <div class="mb-6">
+                <h3 class="font-semibold text-lg mb-4 flex items-center">
+                    <i class="fas fa-rocket mr-2 text-purple-500"></i>
+                    Advanced Mode
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex items-start space-x-4 p-4 hover:bg-opacity-20 hover:bg-blue-500 rounded-xl cursor-pointer transition-all duration-200 border border-opacity-20 hover:border-opacity-40 border-blue-500" data-model="deep-research">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-microscope text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold text-base mb-1">Deep Research</div>
+                            <div class="text-sm opacity-70 mb-2">In-depth research on complex topics</div>
+                            <div class="flex items-center space-x-3 text-xs">
+                                <div class="flex items-center space-x-1 text-green-500">
+                                    <i class="fas fa-search"></i>
+                                    <span>Search</span>
+                                </div>
+                                <div class="flex items-center space-x-1 text-blue-500">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>Files</span>
+                                </div>
+                                <div class="flex items-center space-x-1 text-purple-500">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Reasoning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-4 p-4 hover:bg-opacity-20 hover:bg-yellow-500 rounded-xl cursor-pointer transition-all duration-200 border border-opacity-20 hover:border-opacity-40 border-yellow-500" data-model="pro-search">
+                        <div class="w-10 h-10 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-star text-white text-sm"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="font-semibold text-base mb-1">Pro Search</div>
+                            <div class="text-sm opacity-70 mb-2">Enhanced search with web access</div>
+                            <div class="flex items-center space-x-3 text-xs">
+                                <div class="flex items-center space-x-1 text-green-500">
+                                    <i class="fas fa-search"></i>
+                                    <span>Search</span>
+                                </div>
+                                <div class="flex items-center space-x-1 text-purple-500">
+                                    <i class="fas fa-brain"></i>
+                                    <span>Reasoning</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- OpenAI Models -->
+            <div class="mb-6">
+                <div class="flex items-center mb-3">
+                    <div class="w-6 h-6 mr-2 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="118 120 480 480" fill="currentColor" class="w-5 h-5"><path d="M304.246 295.411V249.828C304.246 245.989 305.687 243.109 309.044 241.191L400.692 188.412C413.167 181.215 428.042 177.858 443.394 177.858C500.971 177.858 537.44 222.482 537.44 269.982C537.44 273.34 537.44 277.179 536.959 281.018L441.954 225.358C436.197 222 430.437 222 424.68 225.358L304.246 295.411ZM518.245 472.945V364.024C518.245 357.304 515.364 352.507 509.608 349.149L389.174 279.096L428.519 256.543C431.877 254.626 434.757 254.626 438.115 256.543L529.762 309.323C556.154 324.679 573.905 357.304 573.905 388.971C573.905 425.436 552.315 459.024 518.245 472.941V472.945ZM275.937 376.982L236.592 353.952C233.235 352.034 231.794 349.154 231.794 345.315V239.756C231.794 188.416 271.139 149.548 324.4 149.548C344.555 149.548 363.264 156.268 379.102 168.262L284.578 222.964C278.822 226.321 275.942 231.119 275.942 237.838V376.986L275.937 376.982ZM360.626 425.922L304.246 394.255V327.083L360.626 295.416L417.002 327.083V394.255L360.626 425.922ZM396.852 571.789C376.698 571.789 357.989 565.07 342.151 553.075L436.674 498.374C442.431 495.017 445.311 490.219 445.311 483.499V344.352L485.138 367.382C488.495 369.299 489.936 372.179 489.936 376.018V481.577C489.936 532.917 450.109 571.785 396.852 571.785V571.789ZM283.134 464.79L191.486 412.01C165.094 396.654 147.343 364.029 147.343 332.362C147.343 295.416 169.415 262.309 203.48 248.393V357.791C203.48 364.51 206.361 369.308 212.117 372.665L332.074 442.237L292.729 464.79C289.372 466.707 286.491 466.707 283.134 464.79ZM277.859 543.48C223.639 543.48 183.813 502.695 183.813 452.314C183.813 448.475 184.294 444.636 184.771 440.797L279.295 495.498C285.051 498.856 290.812 498.856 296.568 495.498L417.002 425.927V471.509C417.002 475.349 415.562 478.229 412.204 480.146L320.557 532.926C308.081 540.122 293.206 543.48 277.854 543.48H277.859ZM396.852 600.576C454.911 600.576 503.37 559.313 514.41 504.612C568.149 490.696 602.696 440.315 602.696 388.976C602.696 355.387 588.303 322.762 562.392 299.25C564.791 289.173 566.231 279.096 566.231 269.024C566.231 200.411 510.571 149.067 446.274 149.067C433.322 149.067 420.846 150.984 408.37 155.305C386.775 134.192 357.026 120.758 324.4 120.758C266.342 120.758 217.883 162.02 206.843 216.721C153.104 230.637 118.557 281.018 118.557 332.357C118.557 365.946 132.95 398.571 158.861 422.083C156.462 432.16 155.022 442.237 155.022 452.309C155.022 520.922 210.682 572.266 274.978 572.266C287.931 572.266 300.407 570.349 312.883 566.028C334.473 587.141 364.222 600.576 396.852 600.576Z"></path></svg>
+                    </div>
+                    <h4 class="font-medium text-sm">OpenAI</h4>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-3 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg cursor-pointer transition-all duration-200" data-model="GPT-4o">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <span class="font-medium text-sm">GPT-4o</span>
+                                <div class="flex items-center space-x-2 text-xs mt-1">
+                                    <div class="flex items-center space-x-1 text-green-500">
+                                        <i class="fas fa-search w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-blue-500">
+                                        <i class="fas fa-file-alt w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-purple-500">
+                                        <i class="fas fa-brain w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-orange-500">
+                                        <i class="fas fa-eye w-3 h-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium byok-tag">BYOK</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg cursor-pointer transition-all duration-200" data-model="GPT-4o mini">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <span class="font-medium text-sm">GPT-4o mini</span>
+                                <div class="flex items-center space-x-2 text-xs mt-1">
+                                    <div class="flex items-center space-x-1 text-green-500">
+                                        <i class="fas fa-search w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-purple-500">
+                                        <i class="fas fa-brain w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-orange-500">
+                                        <i class="fas fa-eye w-3 h-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium byok-tag">BYOK</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg cursor-pointer transition-all duration-200" data-model="o1-preview">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <span class="font-medium text-sm">o1-preview</span>
+                                <div class="flex items-center space-x-2 text-xs mt-1">
+                                    <div class="flex items-center space-x-1 text-purple-500">
+                                        <i class="fas fa-brain w-3 h-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex space-x-1">
+                            <span class="text-xs px-2 py-1 rounded-full font-medium new-tag">New</span>
+                            <span class="text-xs px-2 py-1 rounded-full font-medium byok-tag">BYOK</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Anthropic Models -->
+            <div class="mb-6">
+                <div class="flex items-center mb-3">
+                    <div class="w-6 h-6 mr-2 flex items-center justify-center">
+                        <svg viewBox="0 0 46 32" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5"><path d="M32.73 0h-6.945L38.45 32h6.945L32.73 0ZM12.665 0 0 32h7.082l2.59-6.72h13.25l2.59 6.72h7.082L19.929 0h-7.264Zm-.702 19.337 4.334-11.246 4.334 11.246h-8.668Z"></path></svg>
+                    </div>
+                    <h4 class="font-medium text-sm">Anthropic</h4>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-3 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg cursor-pointer transition-all duration-200" data-model="Claude 3.5 Sonnet">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <span class="font-medium text-sm">Claude 3.5 Sonnet</span>
+                                <div class="flex items-center space-x-2 text-xs mt-1">
+                                    <div class="flex items-center space-x-1 text-green-500">
+                                        <i class="fas fa-search w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-blue-500">
+                                        <i class="fas fa-file-alt w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-purple-500">
+                                        <i class="fas fa-brain w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-orange-500">
+                                        <i class="fas fa-eye w-3 h-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium byok-tag">BYOK</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg cursor-pointer transition-all duration-200" data-model="Claude 3.5 Haiku">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <span class="font-medium text-sm">Claude 3.5 Haiku</span>
+                                <div class="flex items-center space-x-2 text-xs mt-1">
+                                    <div class="flex items-center space-x-1 text-green-500">
+                                        <i class="fas fa-search w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-purple-500">
+                                        <i class="fas fa-brain w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-orange-500">
+                                        <i class="fas fa-eye w-3 h-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium byok-tag">BYOK</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Google Models -->
+            <div class="mb-6">
+                <div class="flex items-center mb-3">
+                    <div class="w-6 h-6 mr-2 flex items-center justify-center">
+                        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="w-5 h-5"><path d="M16 8.016A8.522 8.522 0 008.016 16h-.032A8.521 8.521 0 000 8.016v-.032A8.521 8.521 0 007.984 0h.032A8.522 8.522 0 0016 7.984v.032z"></path></svg>
+                    </div>
+                    <h4 class="font-medium text-sm">Google</h4>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center justify-between p-3 hover:bg-opacity-10 hover:bg-gray-500 rounded-lg cursor-pointer transition-all duration-200" data-model="Gemini Flash 2.0">
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <span class="font-medium text-sm">Gemini Flash 2.0</span>
+                                <div class="flex items-center space-x-2 text-xs mt-1">
+                                    <div class="flex items-center space-x-1 text-green-500">
+                                        <i class="fas fa-search w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-blue-500">
+                                        <i class="fas fa-file-alt w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-purple-500">
+                                        <i class="fas fa-brain w-3 h-3"></i>
+                                    </div>
+                                    <div class="flex items-center space-x-1 text-orange-500">
+                                        <i class="fas fa-eye w-3 h-3"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 backdrop-blur-xs">
+        <div class="rounded-lg shadow-2xl w-full max-w-4xl h-3/4 flex">
+            <!-- Modal Navigation -->
+            <div class="w-64 rounded-l-lg p-4">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-lg font-semibold">Settings</h2>
+                    <button id="closeModal" class="opacity-70 hover:opacity-100 transition-opacity duration-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <nav class="space-y-1">
+                    <button class="nav-item w-full text-left px-3 py-2 rounded-lg hover:bg-opacity-50 transition-all duration-200 flex items-center space-x-3 nav-active" data-tab="account">
+                        <i class="fas fa-user"></i>
+                        <span>Account</span>
+                    </button>
+                    <button class="nav-item w-full text-left px-3 py-2 rounded-lg hover:bg-opacity-50 transition-all duration-200 flex items-center space-x-3" data-tab="appearance">
+                        <i class="fas fa-palette"></i>
+                        <span>Appearance</span>
+                    </button>
+                    <button class="nav-item w-full text-left px-3 py-2 rounded-lg hover:bg-opacity-50 transition-all duration-200 flex items-center space-x-3" data-tab="customize">
+                        <i class="fas fa-edit"></i>
+                        <span>Customize</span>
+                    </button>
+                    <button class="nav-item w-full text-left px-3 py-2 rounded-lg hover:bg-opacity-50 transition-all duration-200 flex items-center space-x-3" data-tab="apikeys">
+                        <i class="fas fa-key"></i>
+                        <span>API Keys</span>
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- Modal Content -->
+            <div class="flex-1 p-6 custom-scrollbar" style="overflow-y: auto;">
+                <!-- Account Tab -->
+                <div id="account-tab" class="tab-content">
+                    <h3 class="text-xl font-semibold mb-4">Account Settings</h3>
+                    <p class="opacity-70 mb-6">Manage your account information and preferences</p>
+                    
+                    <!-- User Profile Card -->
+                    <div class="account-info-card mb-6 p-6 rounded-lg border">
+                        <div class="flex items-center space-x-4 mb-4">
+                            <img src="{{ current_user.pfp_url }}" 
+                                 alt="Profile Picture" 
+                                 class="account-avatar w-20 h-20 rounded-full border-2"
+                                 id="profilePicture">
+                            <div class="flex-1">
+                                <h4 class="text-lg font-semibold mb-1" id="accountName">{{ current_user.name }}</h4>
+                                <p class="opacity-70 mb-2" id="accountEmail">{{ current_user.email }}</p>
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-xs px-2 py-1 rounded-full font-medium status-verified">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        Verified
+                                    </span>
+                                    <span class="text-xs px-2 py-1 rounded-full font-medium status-free-plan">
+                                        Free Plan
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4">
+                            <div class="account-stat text-center p-3 rounded-lg border">
+                                <div class="text-2xl font-bold mb-1" id="conversationCount">0</div>
+                                <div class="text-sm opacity-70">Conversations</div>
+                            </div>
+                            <div class="account-stat text-center p-3 rounded-lg border">
+                                <div class="text-2xl font-bold mb-1" id="daysActive">0</div>
+                                <div class="text-sm opacity-70">Days Active</div>
+                            </div>
+                            <div class="account-stat text-center p-3 rounded-lg border">
+                                <div class="text-2xl font-bold mb-1" id="messagesSent">0</div>
+                                <div class="text-sm opacity-70">Messages Sent</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Actions -->
+                    <div class="space-y-6">
+                        <!-- Profile Management -->
+                        <div>
+                            <h4 class="font-medium mb-3">Profile Management</h4>
+                            <div class="space-y-3">
+                                <button id="editProfileBtn" class="btn-secondary w-full flex items-center justify-center p-3 rounded-lg border hover:bg-opacity-80 transition-all duration-200">
+                                    <i class="fas fa-edit mr-2"></i>
+                                    Edit Profile Information
+                                </button>
+                                <button id="changePasswordBtn" class="btn-secondary w-full flex items-center justify-center p-3 rounded-lg border hover:bg-opacity-80 transition-all duration-200">
+                                    <i class="fas fa-key mr-2"></i>
+                                    Change Password
+                                </button>
+                                <button id="exportDataBtn" class="btn-secondary w-full flex items-center justify-center p-3 rounded-lg border hover:bg-opacity-80 transition-all duration-200">
+                                    <i class="fas fa-download mr-2"></i>
+                                    Export My Data
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Security -->
+                        <div>
+                            <h4 class="font-medium mb-3">Security</h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">Two-Factor Authentication</div>
+                                        <div class="text-sm opacity-70">Add an extra layer of security</div>
+                                    </div>
+                                    <button class="btn-secondary px-4 py-2 rounded-lg border hover:bg-opacity-80 transition-all duration-200">
+                                        Enable
+                                    </button>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-lg border">
+                                    <div>
+                                        <div class="font-medium">Active Sessions</div>
+                                        <div class="text-sm opacity-70">Manage your logged-in devices</div>
+                                    </div>
+                                    <button class="btn-secondary px-4 py-2 rounded-lg border hover:bg-opacity-80 transition-all duration-200">
+                                        Manage
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Account Actions -->
+                        <div>
+                            <h4 class="font-medium mb-3">Account Actions</h4>
+                            <div class="space-y-3">
+                                <button id="signOutBtn" class="btn-secondary w-full flex items-center justify-center p-3 rounded-lg border hover:bg-opacity-80 transition-all duration-200">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>
+                                    Sign Out
+                                </button>
+                                <button id="deleteAccountBtn" class="bg-red-600 text-white w-full flex items-center justify-center p-3 rounded-lg hover:bg-red-700 transition-all duration-200">
+                                    <i class="fas fa-trash mr-2"></i>
+                                    Delete Account
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Account Information -->
+                        <div>
+                            <h4 class="font-medium mb-3">Account Information</h4>
+                            <div class="space-y-2 text-sm opacity-70">
+                                <div class="flex justify-between">
+                                    <span>Account Created:</span>
+                                    <span id="accountCreated">Loading...</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Last Sign In:</span>
+                                    <span id="lastSignIn">Loading...</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Account ID:</span>
+                                    <span class="font-mono">{{ current_user.id }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Appearance Tab -->
+                <div id="appearance-tab" class="tab-content hidden">
+                    <h3 class="text-xl font-semibold mb-4">Appearance</h3>
+                    <p class="opacity-70 mb-6">Customize the look and feel of your interface</p>
+                    
+                    <!-- Theme Mode Toggle -->
+                    <div class="mb-8">
+                        <h4 class="font-medium mb-3">Theme Mode</h4>
+                        <div class="flex items-center space-x-4">
+                            <button id="lightModeBtn" class="flex items-center space-x-2 px-4 py-2 rounded-lg border transition-all duration-200 mode-btn">
+                                <i class="fas fa-sun"></i>
+                                <span>Light</span>
+                            </button>
+                            <button id="darkModeBtn" class="flex items-center space-x-2 px-4 py-2 rounded-lg border transition-all duration-200 mode-btn">
+                                <i class="fas fa-moon"></i>
+                                <span>Dark</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Color Themes -->
+                    <div>
+                        <h4 class="font-medium mb-3">Color Theme</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <!-- Default Theme -->
+                            <div class="theme-option border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md" data-theme="default">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-6 h-6 rounded-full bg-gray-400"></div>
+                                    <span class="font-medium">Default</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <div class="w-4 h-4 rounded bg-gray-100"></div>
+                                    <div class="w-4 h-4 rounded bg-gray-300"></div>
+                                    <div class="w-4 h-4 rounded bg-gray-600"></div>
+                                    <div class="w-4 h-4 rounded bg-gray-800"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Blue Theme -->
+                            <div class="theme-option border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md" data-theme="blue">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-6 h-6 rounded-full bg-blue-500"></div>
+                                    <span class="font-medium">Ocean</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <div class="w-4 h-4 rounded bg-blue-100"></div>
+                                    <div class="w-4 h-4 rounded bg-blue-300"></div>
+                                    <div class="w-4 h-4 rounded bg-blue-600"></div>
+                                    <div class="w-4 h-4 rounded bg-blue-800"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Green Theme -->
+                            <div class="theme-option border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md" data-theme="green">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-6 h-6 rounded-full bg-green-500"></div>
+                                    <span class="font-medium">Forest</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <div class="w-4 h-4 rounded bg-green-100"></div>
+                                    <div class="w-4 h-4 rounded bg-green-300"></div>
+                                    <div class="w-4 h-4 rounded bg-green-600"></div>
+                                    <div class="w-4 h-4 rounded bg-green-800"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Purple Theme -->
+                            <div class="theme-option border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md" data-theme="purple">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-6 h-6 rounded-full bg-purple-500"></div>
+                                    <span class="font-medium">Lavender</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <div class="w-4 h-4 rounded bg-purple-100"></div>
+                                    <div class="w-4 h-4 rounded bg-purple-300"></div>
+                                    <div class="w-4 h-4 rounded bg-purple-600"></div>
+                                    <div class="w-4 h-4 rounded bg-purple-800"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Warm Theme -->
+                            <div class="theme-option border rounded-lg p-4 cursor-pointer transition-all duration-200 hover:shadow-md" data-theme="warm">
+                                <div class="flex items-center space-x-3 mb-3">
+                                    <div class="w-6 h-6 rounded-full bg-orange-500"></div>
+                                    <span class="font-medium">Sunset</span>
+                                </div>
+                                <div class="flex space-x-1">
+                                    <div class="w-4 h-4 rounded bg-orange-100"></div>
+                                    <div class="w-4 h-4 rounded bg-orange-300"></div>
+                                    <div class="w-4 h-4 rounded bg-orange-600"></div>
+                                    <div class="w-4 h-4 rounded bg-orange-800"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- API Keys Tab -->
+                <div id="apikeys-tab" class="tab-content hidden">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <h3 class="text-xl font-semibold">API Keys</h3>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium byok-tag">BYOK</span>
+                    </div>
+                    <p class="opacity-70 mb-6">Keys are stored locally in your browser and never sent to our servers.</p>
+                    
+                    <div class="space-y-6">
+                        <!-- OpenAI -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">OpenAI</h4>
+                                <a href="https://platform.openai.com/api-keys" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
+                            </div>
+                            <div class="flex space-x-2">
+                                <input type="password" id="openaiKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="openai">Save Key</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Anthropic -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">Anthropic</h4>
+                                <a href="https://console.anthropic.com/" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
+                            </div>
+                            <div class="flex space-x-2">
+                                <input type="password" id="anthropicKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="anthropic">Save Key</button>
+                            </div>
+                        </div>
+                        
+                        <!-- Google Gemini -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <h4 class="font-medium">Google Gemini</h4>
+                                <a href="https://makersuite.google.com/app/apikey" target="_blank" class="text-blue-600 text-sm hover:underline">Get API key here</a>
+                            </div>
+                            <div class="flex space-x-2">
+                                <input type="password" id="geminiKey" placeholder="No API key set" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+                                <button class="api-key-btn border px-4 py-2 rounded-lg hover:bg-opacity-80 transition-all duration-200" data-provider="gemini">Save Key</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Customize Tab -->
+                <div id="customize-tab" class="tab-content hidden">
+                    <h3 class="text-xl font-semibold mb-4">Customize Your AI Response</h3>
+                    <p class="opacity-70 mb-4">These instructions will be added to the beginning of every message.</p>
+                    
+                    <textarea 
+                        id="customInstructions"
+                        placeholder="Enter your custom instructions" 
+                        class="w-full h-40 p-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none transition-all duration-200"
+                    ></textarea>
+                    
+                    <div class="mt-4 flex justify-end">
+                        <button id="saveCustomInstructions" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all duration-200">
+                            Save Instructions
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu for Threads -->
+    <div id="threadContextMenu" class="hidden fixed z-50 bg-white border rounded-lg shadow-lg py-2 w-48">
+        <button class="w-full text-left px-4 py-2 hover:bg-gray-100 transition-all duration-200" data-action="pin">
+            <i class="fas fa-thumbtack mr-2"></i>
+            <span id="pinText">Pin Thread</span>
+        </button>
+        <button class="w-full text-left px-4 py-2 hover:bg-gray-100 transition-all duration-200" data-action="rename">
+            <i class="fas fa-edit mr-2"></i>
+            Rename Thread
+        </button>
+        <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 transition-all duration-200" data-action="delete">
+            <i class="fas fa-trash mr-2"></i>
+            Delete Thread
+        </button>
+    </div>
+
+    <script>
+        // This variable is injected by the Flask backend template.
+        // It's defined here so the external script.js can access it.
+        const userName = '{{ current_user_name }}' || 'Guest';
+        const API_FETCH_CHATS = "{{ url_for('fetch_chats_api') }}";
+        const API_FETCH_MESSAGES = "{{ url_for('fetch_messages_api') }}";
+    </script>
+    <script src="{{ url_for('static', filename='js/config.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/state.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

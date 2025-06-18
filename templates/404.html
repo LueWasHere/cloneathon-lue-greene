@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found - LLMChat.co</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="font-sans min-h-screen transition-all duration-300" id="app">
+    <!-- Main Container -->
+    <div class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+        <!-- Floating background shapes -->
+        <div class="floating-shapes">
+            <div class="shape"></div>
+            <div class="shape"></div>
+            <div class="shape"></div>
+        </div>
+        
+        <!-- Error Content -->
+        <div class="relative z-10 max-w-2xl w-full text-center">
+            <!-- Header with Logo -->
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold mb-2 logo-text">llmchat.co</h1>
+            </div>
+            
+            <!-- Error Card -->
+            <div class="error-card rounded-2xl p-8 mb-8">
+                <!-- Cat Image -->
+                <div class="mb-6">
+                    <img src="{{ url_for('static', filename='cats/cat_404.gif') }}" 
+                         alt="Surprised Cat"
+                         class="cat-image mx-auto rounded-xl shadow-lg"
+                         style="max-width: 300px; max-height: 200px; width: auto; height: auto;">
+                </div>
+                
+                <!-- Error Info -->
+                <div class="mb-8">
+                    <h2 class="text-4xl font-bold mb-4">404</h2>
+                    <h3 class="text-xl font-semibold mb-4">Page Not Found</h3>
+                    <p class="opacity-70 text-lg mb-6">
+                        Even this cat is shocked you ended up here.<br>
+                        The page you're looking for doesn't exist.
+                    </p>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <button onclick="goHome()" class="btn-primary px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center">
+                        <i class="fas fa-home mr-2"></i>
+                        Go Back Home
+                    </button>
+                    <button onclick="goBack()" class="btn-secondary px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center">
+                        <i class="fas fa-arrow-left mr-2"></i>
+                        Go Back
+                    </button>
+                </div>
+                
+                <!-- Help Text -->
+                <div class="mt-8 pt-6 border-t">
+                    <p class="text-sm opacity-50">
+                        If you think this is a mistake, please 
+                        <a href="mailto:support@llmchat.co" class="link">contact support</a>
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Theme Toggle -->
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <i class="fas fa-sun" id="theme-icon"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Theme configuration - same as main app
+        const themes = {
+            default: { 
+                light: { mainBg: '#F9F9F9', surface: '#FFFFFF', primaryText: '#333333', secondaryText: '#888888', border: '#E5E5E5', primaryBtn: '#111111' }, 
+                dark: { mainBg: '#171717', surface: '#252525', primaryText: '#E5E5E5', secondaryText: '#A0A0A0', border: '#333333', primaryBtn: '#4b5563' } 
+            },
+            blue: { 
+                light: { mainBg: '#F8FAFC', surface: '#FFFFFF', primaryText: '#1E293B', secondaryText: '#64748B', border: '#E2E8F0', primaryBtn: '#1E40AF' }, 
+                dark: { mainBg: '#0F172A', surface: '#334155', primaryText: '#F1F5F9', secondaryText: '#94A3B8', border: '#475569', primaryBtn: '#3B82F6' } 
+            },
+            green: { 
+                light: { mainBg: '#F7FDF7', surface: '#FFFFFF', primaryText: '#14532D', secondaryText: '#6B7280', border: '#D1FAE5', primaryBtn: '#166534' }, 
+                dark: { mainBg: '#0F1B0F', surface: '#2D4A2D', primaryText: '#ECFDF5', secondaryText: '#9CA3AF', border: '#4ADE80', primaryBtn: '#22C55E' } 
+            },
+            purple: { 
+                light: { mainBg: '#FDFAFF', surface: '#FFFFFF', primaryText: '#581C87', secondaryText: '#7C3AED', border: '#E9D5FF', primaryBtn: '#6b21a8' }, 
+                dark: { mainBg: '#1A0B2E', surface: '#4C1D95', primaryText: '#F3E8FF', secondaryText: '#C4B5FD', border: '#8B5CF6', primaryBtn: '#A855F7' } 
+            },
+            warm: { 
+                light: { mainBg: '#FFFBF5', surface: '#FFFFFF', primaryText: '#9A3412', secondaryText: '#EA580C', border: '#FDBA74', primaryBtn: '#C2410C' }, 
+                dark: { mainBg: '#1C0F0A', surface: '#44281A', primaryText: '#FED7AA', secondaryText: '#FDBA74', border: '#F97316', primaryBtn: '#FB923C' } 
+            }
+        };
+
+        // Load user preferences from localStorage
+        let userPreferences = {};
+        let currentTheme = 'default';
+        let isDarkMode = false;
+
+        function loadUserPreferences() {
+            const appData = localStorage.getItem('llmChatData');
+            if (appData) {
+                const parsedData = JSON.parse(appData);
+                userPreferences = parsedData.preferences || {};
+                currentTheme = userPreferences.theme || 'default';
+                isDarkMode = userPreferences.is_dark_mode || false;
+            }
+            applyTheme();
+        }
+
+        function applyTheme() {
+            const app = document.getElementById('app');
+            const mode = isDarkMode ? 'dark' : 'light';
+            const colors = themes[currentTheme][mode];
+            const icon = document.getElementById('theme-icon');
+            
+            // Apply CSS variables
+            document.documentElement.style.setProperty('--main-bg', colors.mainBg);
+            document.documentElement.style.setProperty('--surface', colors.surface);
+            document.documentElement.style.setProperty('--primary-text', colors.primaryText);
+            document.documentElement.style.setProperty('--secondary-text', colors.secondaryText);
+            document.documentElement.style.setProperty('--border', colors.border);
+            document.documentElement.style.setProperty('--primary-btn', colors.primaryBtn);
+            
+            // Apply to body and app
+            app.style.backgroundColor = colors.mainBg;
+            app.style.color = colors.primaryText;
+            
+            // Apply theme classes
+            document.body.className = document.body.className.replace(/theme-\w+/g, '');
+            document.body.classList.add(`theme-${currentTheme}`);
+            if (isDarkMode) {
+                document.body.classList.add('theme-dark');
+                icon.className = 'fas fa-moon';
+            } else {
+                document.body.classList.add('theme-light');
+                icon.className = 'fas fa-sun';
+            }
+            
+            // Style elements
+            const errorCard = document.querySelector('.error-card');
+            if (errorCard) {
+                errorCard.style.backgroundColor = colors.surface;
+                errorCard.style.borderColor = colors.border;
+                errorCard.style.color = colors.primaryText;
+                errorCard.style.border = `1px solid ${colors.border}`;
+                errorCard.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.1)';
+            }
+            
+            const catImage = document.querySelector('.cat-image');
+            if (catImage) {
+                catImage.style.borderColor = colors.border;
+                catImage.style.border = `2px solid ${colors.border}`;
+            }
+            
+            const logoText = document.querySelector('.logo-text');
+            if (logoText) {
+                logoText.style.background = `linear-gradient(135deg, ${colors.primaryBtn} 0%, ${colors.primaryText} 100%)`;
+                logoText.style.webkitBackgroundClip = 'text';
+                logoText.style.webkitTextFillColor = 'transparent';
+                logoText.style.backgroundClip = 'text';
+            }
+            
+            const themeToggle = document.querySelector('.theme-toggle');
+            if (themeToggle) {
+                themeToggle.style.backgroundColor = colors.surface;
+                themeToggle.style.borderColor = colors.border;
+                themeToggle.style.color = colors.primaryText;
+                themeToggle.style.border = `1px solid ${colors.border}`;
+            }
+            
+            // Style buttons
+            document.querySelectorAll('.btn-primary').forEach(btn => {
+                btn.style.backgroundColor = colors.primaryBtn;
+                btn.style.color = isDarkMode ? colors.primaryText : '#FFFFFF';
+                btn.style.border = 'none';
+            });
+            
+            document.querySelectorAll('.btn-secondary').forEach(btn => {
+                btn.style.backgroundColor = colors.surface;
+                btn.style.color = colors.primaryText;
+                btn.style.border = `1px solid ${colors.border}`;
+            });
+            
+            document.querySelectorAll('.link').forEach(link => {
+                link.style.color = colors.primaryBtn;
+            });
+            
+            // Style floating shapes
+            document.querySelectorAll('.shape').forEach(shape => {
+                if (isDarkMode) {
+                    shape.style.background = `linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.1) 100%)`;
+                } else {
+                    shape.style.background = `linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 100%)`;
+                }
+            });
+        }
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            
+            // Save to localStorage if possible
+            if (userPreferences) {
+                userPreferences.is_dark_mode = isDarkMode;
+                const appData = localStorage.getItem('llmChatData');
+                if (appData) {
+                    const parsedData = JSON.parse(appData);
+                    parsedData.preferences = userPreferences;
+                    localStorage.setItem('llmChatData', JSON.stringify(parsedData));
+                }
+            }
+            
+            applyTheme();
+        }
+
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                goHome();
+            }
+        }
+
+        // Initialize theme on load
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUserPreferences();
+        });
+    </script>
+
+    <style>
+        .floating-shapes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+            animation-delay: 0s;
+        }
+        
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            animation-delay: 2s;
+        }
+        
+        .shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            top: 50%;
+            left: -75px;
+            animation-delay: 4s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .error-card {
+            backdrop-filter: blur(20px);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            background-color: var(--main-bg) !important;
+        }
+        
+        .link:hover {
+            opacity: 0.8;
+        }
+        
+        .cat-image {
+            transition: all 0.3s ease;
+        }
+        
+        .cat-image:hover {
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 640px) {
+            .error-card {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .shape {
+                display: none;
+            }
+        }
+    </style>
+</body>
+</html>

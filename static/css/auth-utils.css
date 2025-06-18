@@ -1,0 +1,294 @@
+/* Authentication Utility Classes - auth-utils.css */
+
+/* Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus Management */
+.focus-visible:focus {
+    outline: 2px solid var(--accent-color);
+    outline-offset: 2px;
+}
+
+/* Smooth Transitions */
+.transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.transition-fast {
+    transition: all 0.15s ease-out;
+}
+
+/* Loading States */
+.loading {
+    position: relative;
+    pointer-events: none;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid var(--primary-text);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Form Field States */
+.field-error {
+    color: #DC2626;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.field-success {
+    color: #059669;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.field-warning {
+    color: #D97706;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+/* Button States */
+.btn-loading {
+    position: relative;
+    color: transparent !important;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+/* Accessibility Helpers */
+.focus-trap {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.focus-trap.active {
+    pointer-events: auto;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .form-input:focus {
+        border-width: 3px;
+    }
+    
+    .btn-primary {
+        border: 2px solid;
+    }
+    
+    .link {
+        text-decoration: underline;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .floating-shapes .shape {
+        animation: none;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .theme-toggle,
+    .floating-shapes,
+    .btn-google {
+        display: none !important;
+    }
+    
+    .auth-card {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+    
+    .form-input {
+        border: 1px solid #000;
+    }
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+    .auth-card {
+        margin: 0.5rem;
+        padding: 1.5rem;
+    }
+    
+    .feature-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .feature-card {
+        padding: 1rem;
+    }
+    
+    .floating-shapes .shape {
+        display: none;
+    }
+    
+    /* Ensure form inputs are properly sized on mobile */
+    .form-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+    .btn-primary,
+    .btn-google,
+    .theme-toggle {
+        min-height: 44px; /* Apple's recommended touch target size */
+    }
+    
+    .link {
+        padding: 0.25rem;
+        margin: -0.25rem;
+    }
+}
+
+/* Dark Mode Specific Utilities */
+[data-mode="dark"] .field-error {
+    color: #FCA5A5;
+}
+
+[data-mode="dark"] .field-success {
+    color: #86EFAC;
+}
+
+[data-mode="dark"] .field-warning {
+    color: #FDBA74;
+}
+
+/* Theme-specific Overrides */
+[data-theme="blue"] .btn-loading::after {
+    border-top-color: #3B82F6;
+}
+
+[data-theme="green"] .btn-loading::after {
+    border-top-color: #22C55E;
+}
+
+[data-theme="purple"] .btn-loading::after {
+    border-top-color: #A855F7;
+}
+
+[data-theme="warm"] .btn-loading::after {
+    border-top-color: #FB923C;
+}
+
+/* Animation Utilities */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-out;
+}
+
+.slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+.slide-down {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+@keyframes slideUp {
+    from { 
+        opacity: 0;
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0); 
+    }
+}
+
+@keyframes slideDown {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px); 
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0); 
+    }
+}
+
+/* Validation States */
+.input-valid {
+    border-color: #059669;
+    background-image: url("data:image/svg+xml,%3csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M6.267 10.267l-2.134-2.133L3 9.267l3.267 3.266L14.667 4.133 13.533 3z' fill='%23059669'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 2.5rem;
+}
+
+.input-invalid {
+    border-color: #DC2626;
+    background-image: url("data:image/svg+xml,%3csvg width='16' height='16' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M8 16A8 8 0 118 0a8 8 0 010 16zM6.5 5L8 6.5 9.5 5 11 6.5 9.5 8 11 9.5 9.5 11 8 9.5 6.5 11 5 9.5 6.5 8 5 6.5 6.5 5z' fill='%23DC2626'/%3e%3c/svg%3e");
+    background-position: right 0.75rem center;
+    background-repeat: no-repeat;
+    background-size: 16px;
+    padding-right: 2.5rem;
+}

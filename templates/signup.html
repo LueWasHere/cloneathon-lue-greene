@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - LLMChat.co</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="auth-container" data-theme="default" data-mode="light">
+    <!-- Floating background shapes -->
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Auth Container -->
+    <div class="min-h-screen flex items-center justify-center px-4 py-12 relative z-10">
+        <div class="max-w-6xl w-full flex items-center justify-center gap-16">
+            
+            <!-- Left Side - Branding & Features -->
+            <div class="hidden lg:flex flex-col flex-1 max-w-lg">
+                <div class="mb-8">
+                    <h1 class="text-4xl font-bold logo-text mb-4">llmchat.co</h1>
+                    <p class="text-xl text-gray-600 mb-2">Your AI-powered conversation companion</p>
+                    <p class="text-gray-500">Experience the future of AI chat with multiple models, advanced search, and seamless conversations.</p>
+                </div>
+
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                            <i class="fas fa-robot text-blue-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Multiple AI Models</h3>
+                        <p class="text-gray-600 text-sm">Access GPT-4, Claude, Gemini, and more in one place</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-3">
+                            <i class="fas fa-search text-purple-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Advanced Research</h3>
+                        <p class="text-gray-600 text-sm">Deep research mode with web access and analysis</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                            <i class="fas fa-comments text-green-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Smart Conversations</h3>
+                        <p class="text-gray-600 text-sm">Organized threads with intelligent search and pinning</p>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center mb-3">
+                            <i class="fas fa-palette text-orange-600 text-xl"></i>
+                        </div>
+                        <h3 class="font-semibold text-gray-800 mb-2">Beautiful Themes</h3>
+                        <p class="text-gray-600 text-sm">Customizable themes and dark mode support</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Sign Up Form -->
+            <div class="w-full max-w-md">
+                <div class="auth-card enhanced rounded-2xl p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Create account</h2>
+                        <p class="text-gray-600">Start your AI conversation journey</p>
+                    </div>
+
+                    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="{{ 'error-message' if category == 'error' else 'success-message' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('auth.signup') }}" class="space-y-6" id="signup-form">
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Full name</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-user text-gray-400"></i>
+                                </div>
+                                <input type="text" id="name" name="name" required 
+                                       class="form-input enhanced w-full pl-10 pr-4 py-3 rounded-lg" 
+                                       placeholder="Enter your full name"
+                                       value="{{ request.form.name or '' }}">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email address</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-gray-400"></i>
+                                </div>
+                                <input type="email" id="email" name="email" required 
+                                       class="form-input enhanced w-full pl-10 pr-4 py-3 rounded-lg" 
+                                       placeholder="Enter your email"
+                                       value="{{ request.form.email or '' }}">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input type="password" id="password" name="password" required 
+                                       class="form-input enhanced w-full pl-10 pr-12 py-3 rounded-lg" 
+                                       placeholder="Create a password"
+                                       title="Password must be at least 8 characters and include uppercase, lowercase, number, and special character">
+                                <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('password')">
+                                    <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors" id="password-toggle"></i>
+                                </button>
+                            </div>
+                            <div id="password-strength" class="password-strength hidden"></div>
+                        </div>
+
+                        <div>
+                            <label for="password2" class="block text-sm font-medium text-gray-700 mb-2">Confirm password</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-gray-400"></i>
+                                </div>
+                                <input type="password" id="password2" name="password2" required 
+                                       class="form-input enhanced w-full pl-10 pr-12 py-3 rounded-lg" 
+                                       placeholder="Confirm your password">
+                                <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center" onclick="togglePassword('password2')">
+                                    <i class="fas fa-eye text-gray-400 hover:text-gray-600 transition-colors" id="password2-toggle"></i>
+                                </button>
+                            </div>
+                            <div id="password-match" class="hidden mt-2 text-xs"></div>
+                        </div>
+
+                        <div class="flex items-start">
+                            <input type="checkbox" id="terms" name="terms" required class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1">
+                            <label for="terms" class="ml-2 text-sm text-gray-600">
+                                I agree to the <a href="#" class="link enhanced">Terms of Service</a> and 
+                                <a href="#" class="link enhanced">Privacy Policy</a>
+                            </label>
+                        </div>
+
+                        <!-- Progress Indicator (Hidden by default, can be shown via JS) -->
+                        <div class="hidden">
+                            <div class="w-full bg-gray-200 rounded-full h-2">
+                                <div id="form-progress" class="bg-blue-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">Form completion progress</p>
+                        </div>
+
+                        <button type="submit" class="btn-primary enhanced w-full py-3 px-4 rounded-lg font-medium">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="mt-6 text-center">
+                        <p class="text-sm text-gray-600">
+                            Already have an account? 
+                            <a href="{{ url_for('auth.login') }}" class="link enhanced font-medium transition-colors">Sign in</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Screen Reader Live Region -->
+    <div id="live-region" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- External JavaScript -->
+    <script src="{{ url_for('static', filename='js/signup.js') }}"></script>
+</body>
+</html>
